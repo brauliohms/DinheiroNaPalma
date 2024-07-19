@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply rounded-full text-white text-base text-center transition flex items-center justify-between font-medium;
+  }
+
+  .btn-primary {
+    @apply btn p-0.5;
+    @apply bg-purple-700 hover:bg-purple-600;
+  }
+
+  .btn-secondary {
+    @apply btn px-4 py-2;
+    @apply bg-zinc-700 hover:bg-zinc-600;
+  }
+
+  .btn-danger {
+    @apply btn px-4 py-2;
+    @apply bg-red-700 hover:bg-red-600;
+  }
+
+  .input {
+    @apply bg-transparent border-0 border-b-2 border-zinc-600 py-2 outline-none appearance-none text-xl font-bold focus:outline-none focus:ring-0 focus:border-zinc-600;
+  }
+
+  .label {
+    @apply text-zinc-600;
+  }
+}

@@ -1,0 +1,14 @@
+**/**/*.log
+*.md
+.gitignore
+Dockerfile
+.dockerignore
+node_modules
+test/
+dist
+npm-debug.log
+README.md
+.next
+.git
+start.sh
+*.tsbuildinfo
