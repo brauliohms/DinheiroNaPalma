@@ -1,11 +1,8 @@
 import { Id } from "common";
-import dotenv from "dotenv";
 import { BackendRegistro, Registro, RegistroDTO } from "registro";
 import { Adapter } from "./Adapter";
 import { conexao } from "./knex";
-dotenv.config();
 
-// const tableRegistros: string = process.env.TABLE_REGISTROS || "";
 const tableRegistros: string = "Registros";
 
 export class DatabaseKnexRegistroAdapter implements BackendRegistro {

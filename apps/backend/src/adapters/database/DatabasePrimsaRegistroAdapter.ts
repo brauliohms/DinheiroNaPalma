@@ -1,9 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Id } from "common";
-import dotenv from "dotenv";
 import { BackendRegistro, Registro, RegistroDTO } from "registro";
 import { Adapter } from "./Adapter";
-dotenv.config();
 
 const prisma = new PrismaClient();
 
