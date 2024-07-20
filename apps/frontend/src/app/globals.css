@@ -4,22 +4,22 @@
 
 @layer components {
   .btn {
-    @apply rounded-full text-white text-base text-center transition flex items-center justify-between font-medium;
+    @apply rounded-full text-white text-base text-center flex items-center justify-between font-medium transition-colors;
   }
 
   .btn-primary {
-    @apply btn p-0.5;
-    @apply bg-purple-700 hover:bg-purple-600;
+    @apply btn;
+    @apply bg-purple-700 hover:bg-purple-600 disabled:bg-purple-600;
   }
 
   .btn-secondary {
-    @apply btn px-4 py-2;
-    @apply bg-zinc-700 hover:bg-zinc-600;
+    @apply btn px-6 py-2;
+    @apply bg-zinc-700 hover:bg-zinc-600 disabled:bg-zinc-600;
   }
 
   .btn-danger {
-    @apply btn px-4 py-2;
-    @apply bg-red-700 hover:bg-red-600;
+    @apply btn px-6 py-2;
+    @apply bg-red-700 hover:bg-red-600 disabled:bg-red-600;
   }
 
   .input {
