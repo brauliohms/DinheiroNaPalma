@@ -1,12 +1,13 @@
 import { BackendRegistroAdapter } from "@/adapters/backend";
+import { Formatter } from "common";
 import {
-  RegistroDTO,
-  Registro,
-  ObterRegistroPorId,
-  EditarRegistro,
-  DeletarRegistro,
   CriarNovoRegistro,
+  DeletarRegistro,
+  EditarRegistro,
+  ObterRegistroPorId,
   ObterRegistros,
+  Registro,
+  RegistroDTO,
 } from "registro";
 
 export function useRegistro() {
@@ -14,8 +15,12 @@ export function useRegistro() {
 
   async function novoRegistroController(registro: RegistroDTO) {
     const criarNovoRegistro = new CriarNovoRegistro(backend);
+    const newData: RegistroDTO = {
+      ...registro,
+      valor: Formatter.moneyStringToStore(registro.valor.toString()),
+    };
     try {
-      return await criarNovoRegistro.executar({ registro });
+      return await criarNovoRegistro.executar({ registro: newData });
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -38,7 +43,7 @@ export function useRegistro() {
     }
   }
 
-  async function getRegistroPorIdController(registro_id: number) {
+  async function getRegistroPorIdController(registro_id: string) {
     const obterRegistroPorId = new ObterRegistroPorId(backend);
     try {
       return await obterRegistroPorId.executar({ registro_id });
@@ -51,10 +56,10 @@ export function useRegistro() {
     }
   }
 
-  async function delRegistroController(registro_id: number) {
+  async function delRegistroController(registro_id: string) {
     const deleteRegistro = new DeletarRegistro(backend);
     try {
-      deleteRegistro.executar({ registro_id });
+      await deleteRegistro.executar({ registro_id });
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -64,10 +69,18 @@ export function useRegistro() {
     }
   }
 
-  async function editRegistroController(registro: Registro) {
+  async function editRegistroController(
+    registro: RegistroDTO,
+    registro_id: string
+  ) {
     const editarRegistro = new EditarRegistro(backend);
+    const newData: Registro = {
+      ...registro,
+      id: registro_id,
+      valor: Formatter.moneyStringToStore(registro.valor.toString()),
+    };
     try {
-      return await editarRegistro.executar({ registro });
+      return await editarRegistro.executar({ registro: newData });
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);

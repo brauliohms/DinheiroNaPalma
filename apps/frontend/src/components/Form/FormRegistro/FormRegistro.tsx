@@ -5,8 +5,10 @@ import {
   ArrowTrendingUpIcon,
   ChevronLeftIcon,
   EyeIcon,
+  LoaderIcon,
   PencilIcon,
 } from "@/components/Icons";
+import { useRegistro } from "@/hooks";
 import useToggle from "@/hooks/useToggle";
 import clsx from "clsx";
 import { Formatter } from "common/src/Formatter";
@@ -14,24 +16,48 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { RegistroStatus } from "registro";
+import { Registro, RegistroStatus } from "registro";
 
 const URL_HOME = process.env.NEXT_PUBLIC_PAGE_HOME || "";
 
-export function FormRegistro() {
-  const { reset, register, handleSubmit, setValue, watch } = useForm({
+interface FormRegistroProps {
+  registro?: Registro;
+}
+
+export function FormRegistro({ registro }: FormRegistroProps) {
+  const {
+    reset,
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { isSubmitting },
+  } = useForm({
     defaultValues: {
-      descricao: "",
-      data: new Date().toISOString().split("T")[0],
-      valor: 0.0,
-      status: "pendente",
+      descricao: registro?.descricao || "",
+      data: registro?.data
+        ? new Date(registro.data).toISOString().split("T")[0]
+        : "",
+      valor: registro?.valor
+        ? Formatter.moneyNumberToDisplay(registro.valor)
+        : "",
+      tipo: registro?.tipo || "",
+      status: registro?.status || "",
     },
   });
-  const [despesa, toggleDespesa] = useToggle(true);
+
+  const {
+    editRegistroController,
+    novoRegistroController,
+    delRegistroController,
+  } = useRegistro();
+  const [despesa, toggleDespesa] = useToggle(
+    registro?.tipo === "receita" ? false : true
+  );
   const [edicao, toggleEdicao] = useToggle(false);
   const router = useRouter();
 
-  const status = watch("status");
+  const status: RegistroStatus = watch("status");
 
   useEffect(() => {
     if (despesa) {
@@ -45,9 +71,15 @@ export function FormRegistro() {
     setValue("status", status);
   }
 
-  function salvarformulario(data: any) {
-    console.log(data);
-    reset();
+  async function salvarformulario(data: any) {
+    if (registro) {
+      console.log("ATUALIZAR");
+      editRegistroController(data, registro.id);
+    } else {
+      console.log("NOVO REGISTRO");
+      novoRegistroController(data);
+      reset();
+    }
     router.push("/");
   }
   return (
@@ -189,14 +221,34 @@ export function FormRegistro() {
           </div>
         </div>
 
-        <div className="w-full bg-zinc-900 rounded-md flex items-center justify-start px-8 py-4 gap-x-2">
-          <button type="submit" className="btn-primary  px-6 py-2">
-            Salvar
-          </button>
+        <div className="w-full bg-zinc-900 rounded-md flex items-center justify-between px-8 py-4">
+          <div className="flex items-center justify-start gap-x-2">
+            <button
+              type="submit"
+              className="btn-primary px-8 py-2"
+              disabled={isSubmitting}
+              aria-disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <LoaderIcon className="animate-spin" />
+              ) : (
+                "Salvar"
+              )}
+            </button>
 
-          <button type="button" className="btn-secondary">
-            Cancelar
-          </button>
+            <button type="button" className="btn-secondary">
+              <Link href={URL_HOME}>Cancelar</Link>
+            </button>
+          </div>
+          {registro && (
+            <button
+              type="button"
+              className="btn-danger"
+              onClick={() => delRegistroController(registro.id)}
+            >
+              Excluir
+            </button>
+          )}
         </div>
       </form>
     </section>

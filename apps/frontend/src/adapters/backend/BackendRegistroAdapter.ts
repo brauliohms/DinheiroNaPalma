@@ -23,7 +23,7 @@ export class BackendRegistroAdapter implements BackendRegistro {
   }
   async editar(registro: Registro): Promise<Response> {
     return await fetchMutation<Registro>(
-      `${ENDPOINT_REGISTROS}/${registro.id}`,
+      `${ENDPOINT_REGISTROS}`,
       "PUT",
       registro
     );
