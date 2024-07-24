@@ -57,7 +57,7 @@ export function FormRegistro({ registro }: FormRegistroProps) {
   const [edicao, toggleEdicao] = useToggle(false);
   const router = useRouter();
 
-  const status: RegistroStatus = watch("status");
+  const status = watch("status");
 
   useEffect(() => {
     if (despesa) {

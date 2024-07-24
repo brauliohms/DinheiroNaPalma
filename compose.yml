@@ -23,7 +23,8 @@ services:
     depends_on:
       - psql
     build:
-      context: ./apps/backend/
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
     restart: always
     env_file:
       - ./docker/backend.env
@@ -38,7 +39,8 @@ services:
     depends_on:
       - backend
     build:
-      context: ./apps/frontend/
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
       # args:
       #   ENV_VARIABLE: ${ENV_VARIABLE}
       #   NEXT_PUBLIC_ENV_VARIABLE: ${NEXT_PUBLIC_ENV_VARIABLE}

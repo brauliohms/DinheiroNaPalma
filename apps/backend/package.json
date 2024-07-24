@@ -1,12 +1,12 @@
 {
-  "name": "dinheironamao-backend",
+  "name": "backend",
   "version": "0.1.0",
   "author": {
     "email": "braulio@integradocs.com.br",
     "name": "Braulio Henrique Marques Souto"
   },
   "scripts": {
-    "build": "npx ts-node build.ts",
+    "build": "tsc --build tsconfig.prod.json",
     "lint": "npx eslint --ext .ts src/",
     "lint:tests": "npx eslint --ext .ts test/",
     "start": "node -r module-alias/register ./dist",
