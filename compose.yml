@@ -35,7 +35,7 @@ services:
       - "8000"
     networks:
       - net_psql
-      - net_local1
+      - net_gateway
 
   frontend:
     container_name: frontend
@@ -54,7 +54,6 @@ services:
       - "3000"
     networks:
       - net_gateway
-      - net_local1
 
   nginx:
     container_name: ngnix
@@ -63,11 +62,11 @@ services:
     restart: always
     ports:
       - "80:80"
-      # - "443:443"
+      - "443:443"
     volumes:
-      # - /var/docker/etc/letsencrypt/:/etc/letsencrypt
+      - /var/docker/etc/letsencrypt/:/etc/letsencrypt
       - ./docker/nginx/conf.d/:/etc/nginx/conf.d
-      - ./docker/log/nginx:/var/log/nginx
+      - /var/docker/log/nginx:/var/log/nginx
     networks:
       - net_gateway
 
@@ -82,7 +81,6 @@ services:
       - "8080:8080"
     networks:
       - net_psql
-      - net_local1
 
 volumes:
   pgdata:
@@ -90,4 +88,3 @@ volumes:
 networks:
   net_psql:
   net_gateway:
-  net_local1:

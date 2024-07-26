@@ -16,6 +16,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.52.1",
     "registro": "*",
+    "sharp": "^0.33.4",
     "zod": "^3.23.8"
   },
   "devDependencies": {
