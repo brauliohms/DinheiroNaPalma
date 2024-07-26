@@ -26,6 +26,9 @@ services:
       context: .
       dockerfile: ./apps/backend/Dockerfile
     restart: always
+    command: /scripts/start-backend.sh
+    volumes:
+      - ./docker/scripts:/scripts/
     env_file:
       - ./docker/backend.env
     expose:
