@@ -1,3 +1,4 @@
+import { URL_REGISTRO } from "@/adapters/backend";
 import clsx from "clsx";
 import { Formatter } from "common/src/Formatter";
 import Link from "next/link";
@@ -12,8 +13,6 @@ import {
 interface TableItemProps {
   registro: Registro;
 }
-
-const URL_REGISTRO = process.env.NEXT_PUBLIC_PAGE_REGISTRO || "";
 
 export function TableItem({ registro }: TableItemProps) {
   return (

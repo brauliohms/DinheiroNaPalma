@@ -1,4 +1,5 @@
 "use client";
+import { URL_HOME } from "@/adapters/backend";
 import { Dropdown } from "@/components/Dropdow";
 import {
   ArrowTrendingDownIcon,
@@ -17,8 +18,6 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Registro, RegistroStatus } from "registro";
-
-const URL_HOME = process.env.NEXT_PUBLIC_PAGE_HOME || "";
 
 interface FormRegistroProps {
   registro?: Registro;

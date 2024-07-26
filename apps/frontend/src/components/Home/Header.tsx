@@ -1,11 +1,9 @@
+import { URL_REGISTRO } from "@/adapters/backend";
 import Link from "next/link";
 import { ChevronDownIcon, PlusCircleIcon } from "../Icons";
-
 interface HeaderProps {
   quantidadeRegistros: number;
 }
-
-const URL_REGISTRO = process.env.NEXT_PUBLIC_PAGE_REGISTRO || "";
 
 export function Header({ quantidadeRegistros }: HeaderProps) {
   return (
