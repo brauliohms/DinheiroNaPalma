@@ -1,5 +1,5 @@
 {
-  "name": "dinheironapalma",
+  "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/error-message": "^2.0.1",
+    "@hookform/resolvers": "^3.9.0",
     "clsx": "^2.1.1",
     "common": "*",
     "next": "14.2.4",
@@ -16,6 +18,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.52.1",
     "registro": "*",
+    "sharp": "^0.33.4",
     "zod": "^3.23.8"
   },
   "devDependencies": {

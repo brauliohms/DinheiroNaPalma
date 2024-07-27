@@ -1,4 +1,4 @@
-NEXT_PUBLIC_API_BASEURL=http://backend:8000/v1/registros
+NEXT_PUBLIC_API_BASEURL=http://backend:8000/v1
 
 # --- # --- # NAO ALTERAR # --- # --- #
 NEXT_PUBLIC_PAGE_HOME=/

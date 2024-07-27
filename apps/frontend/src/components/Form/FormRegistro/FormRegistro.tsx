@@ -1,24 +1,54 @@
 "use client";
+import { URL_HOME } from "@/adapters/backend";
+import { ButtonSubmitAction } from "@/components/Button";
 import { Dropdown } from "@/components/Dropdow";
 import {
   ArrowTrendingDownIcon,
   ArrowTrendingUpIcon,
   ChevronLeftIcon,
   EyeIcon,
-  LoaderIcon,
   PencilIcon,
 } from "@/components/Icons";
+import { CriarRegistroController } from "@/controllers/CriarNovoRegistroController";
+import { EditarRegistroController } from "@/controllers/EditarRegistroController";
 import { useRegistro } from "@/hooks";
 import useToggle from "@/hooks/useToggle";
+import { ErrorMessage } from "@hookform/error-message";
+import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import { Formatter } from "common/src/Formatter";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 import { Registro, RegistroStatus } from "registro";
+import { z } from "zod";
+import FormSchema from "./FormRegistroSchema";
 
-const URL_HOME = process.env.NEXT_PUBLIC_PAGE_HOME || "";
+interface SuccessState {
+  error: false;
+  message: string;
+}
+
+interface ValidationErrorState {
+  error: true;
+  fieldErrors: {
+    [key: string]: string[];
+  };
+}
+
+interface ErrorState {
+  error: true;
+  message: string;
+}
+
+export type FormState = SuccessState | ValidationErrorState | ErrorState;
+
+const initialState: FormState = {
+  error: false,
+  message: "",
+};
 
 interface FormRegistroProps {
   registro?: Registro;
@@ -31,9 +61,12 @@ export function FormRegistro({ registro }: FormRegistroProps) {
     handleSubmit,
     setValue,
     watch,
-    formState: { isSubmitting },
-  } = useForm({
+    setError,
+    formState: { isSubmitting, errors },
+  } = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
     defaultValues: {
+      id: registro?.id || null,
       descricao: registro?.descricao || "",
       data: registro?.data
         ? new Date(registro.data).toISOString().split("T")[0]
@@ -41,23 +74,53 @@ export function FormRegistro({ registro }: FormRegistroProps) {
       valor: registro?.valor
         ? Formatter.moneyNumberToDisplay(registro.valor)
         : "",
-      tipo: registro?.tipo || "",
-      status: registro?.status || "",
+      tipo: registro?.tipo || "despesa",
+      status: registro?.status || "pendente",
     },
   });
 
+  // Hooks (controlers para CRUD usando client-side)
   const {
     editRegistroController,
     novoRegistroController,
     delRegistroController,
   } = useRegistro();
+
+  // Hooks (controlers para CRUD usando client-side)
+  const [state, formAction] = useFormState<FormState, FormData>(
+    registro ? EditarRegistroController : CriarRegistroController,
+    initialState
+  );
+
+  useEffect(() => {
+    if (state?.error) {
+      if ("fieldErrors" in state) {
+        // Trata erros de validação
+        Object.entries(state.fieldErrors).forEach(([field, errors]) => {
+          setError(field as keyof z.infer<typeof FormSchema>, {
+            type: "custom",
+            message: errors[0],
+          });
+        });
+      } else {
+        // TODO: toast error state.message
+      }
+    }
+    if (!state?.error && state?.message) {
+      reset();
+      // TODO: toast success state.message
+      router.push("/");
+    }
+  }, [state]);
+
   const [despesa, toggleDespesa] = useToggle(
     registro?.tipo === "receita" ? false : true
   );
   const [edicao, toggleEdicao] = useToggle(false);
+
   const router = useRouter();
 
-  const status: RegistroStatus = watch("status");
+  const status = watch("status");
 
   useEffect(() => {
     if (despesa) {
@@ -92,7 +155,8 @@ export function FormRegistro({ registro }: FormRegistroProps) {
         <span className="text-lg font-medium">Voltar</span>
       </Link>
       <form
-        onSubmit={handleSubmit(salvarformulario)}
+        // onSubmit={handleSubmit(salvarformulario)}
+        action={formAction}
         className="w-full flex flex-col gap-y-4"
       >
         <div className="w-full bg-zinc-900 rounded-md flex items-center gap-x-6 px-8 py-4 font-medium">
@@ -123,15 +187,22 @@ export function FormRegistro({ registro }: FormRegistroProps) {
         </div>
         <div className="w-full bg-zinc-900 rounded-md flex flex-col justify-between px-8 py-4 gap-y-20">
           <div className="flex justify-between items-end">
-            <input
-              disabled={!edicao}
-              aria-disabled={!edicao}
-              type="text"
-              id="descricao"
-              placeholder="Descrição do registro"
-              className="input text-3xl text-zinc-400"
-              {...register("descricao")}
-            />
+            {registro && <input type="hidden" {...register("id")} />}
+            <div className="flex flex-col">
+              <input
+                disabled={!edicao}
+                aria-disabled={!edicao}
+                type="text"
+                id="descricao"
+                placeholder="Descrição do registro"
+                className="input text-3xl text-zinc-400"
+                maxLength={80}
+                {...register("descricao")}
+              />
+              <span className="text-red-400 font-semibold">
+                <ErrorMessage errors={errors} name="descricao" />
+              </span>
+            </div>
 
             <div className="flex flex-col items-end">
               <label htmlFor="status" className="label">
@@ -143,6 +214,9 @@ export function FormRegistro({ registro }: FormRegistroProps) {
                 handleStatusChange={handleStatusChange}
                 status={status}
               />
+              <span className="text-red-400 font-semibold">
+                <ErrorMessage errors={errors} name="status" />
+              </span>
             </div>
           </div>
 
@@ -162,6 +236,9 @@ export function FormRegistro({ registro }: FormRegistroProps) {
                 // defaultValue={new Date().toISOString().split("T")[0]}
                 typeof="hidden"
               />
+              <span className="text-red-400 font-semibold">
+                <ErrorMessage errors={errors} name="data" />
+              </span>
             </div>
 
             <div className="flex flex-col">
@@ -196,6 +273,9 @@ export function FormRegistro({ registro }: FormRegistroProps) {
                 className="input"
                 type="hidden"
               />
+              <span className="text-red-400 font-semibold">
+                <ErrorMessage errors={errors} name="tipo" />
+              </span>
             </div>
 
             <div className="flex flex-col">
@@ -217,13 +297,16 @@ export function FormRegistro({ registro }: FormRegistroProps) {
                   className="bg-transparent outline-none text-xl font-bold px-2 w-56"
                 />
               </span>
+              <span className="text-red-400 font-semibold">
+                <ErrorMessage errors={errors} name="valor" />
+              </span>
             </div>
           </div>
         </div>
 
         <div className="w-full bg-zinc-900 rounded-md flex items-center justify-between px-8 py-4">
           <div className="flex items-center justify-start gap-x-2">
-            <button
+            {/* <button
               type="submit"
               className="btn-primary px-8 py-2"
               disabled={isSubmitting}
@@ -234,13 +317,14 @@ export function FormRegistro({ registro }: FormRegistroProps) {
               ) : (
                 "Salvar"
               )}
-            </button>
+            </button> */}
+            <ButtonSubmitAction>Salvar</ButtonSubmitAction>
 
             <button type="button" className="btn-secondary">
               <Link href={URL_HOME}>Cancelar</Link>
             </button>
           </div>
-          {registro && (
+          {/* {registro && (
             <button
               type="button"
               className="btn-danger"
@@ -248,7 +332,8 @@ export function FormRegistro({ registro }: FormRegistroProps) {
             >
               Excluir
             </button>
-          )}
+            // TODO: Modal Excluir e form para serveractions
+          )} */}
         </div>
       </form>
     </section>

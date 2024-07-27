@@ -1,21 +1,25 @@
 {
   "name": "dinheironapalma",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "dev": "turbo run dev",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "turbo run lint",
+    "test": "turbo run test"
   },
+  "dependencies": {},
   "devDependencies": {
     "prettier": "^3.2.5",
-    "turbo": "^2.0.7",
-    "typescript": "^5.4.5"
+    "turbo": "^2.0.9"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=14.0.0",
+    "npm": ">=7.0.0"
   },
-  "packageManager": "npm@9.2.0",
+  "packageManager": "yarn@1.22.19",
   "workspaces": [
     "apps/*",
     "packages/*"

@@ -1,3 +1,4 @@
+// import type { Registros } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import { Id } from "common";
 import { BackendRegistro, Registro, RegistroDTO } from "registro";

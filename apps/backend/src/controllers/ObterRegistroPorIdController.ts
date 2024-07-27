@@ -18,9 +18,12 @@ export class ObterRegistroPorIdController {
           // if (isNaN(registro_id)) {
           //   return res.status(400).send("ID do Registro inválido");
           // }
-
-          const registro = await this.casoDeUso.executar({ registro_id });
-          res.status(200).json(registro);
+          if (registro_id) {
+            const registro = await this.casoDeUso.executar({ registro_id });
+            res.status(200).json(registro);
+          } else {
+            res.status(400).send("Não foi informado um ID de Registro");
+          }
         } catch (error) {
           // Verifica se o erro é uma instância de Error
           if (error instanceof Error) {

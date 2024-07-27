@@ -6,7 +6,7 @@ import { PointIcon } from "../Icons";
 interface DropdownProps {
   edicao: boolean;
   handleStatusChange: (status: RegistroStatus) => void;
-  status: RegistroStatus;
+  status: string;
 }
 
 export function Dropdown({
@@ -16,7 +16,7 @@ export function Dropdown({
 }: DropdownProps) {
   const [isShow, toggleShow] = useToggle(false);
 
-  function showStatus(status: RegistroStatus) {
+  function showStatus(status: string) {
     if (status === "pendente") {
       return "Pendente";
     } else if (status === "cancelado") {

@@ -23,22 +23,27 @@ services:
     depends_on:
       - psql
     build:
-      context: ./apps/backend/
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
     restart: always
+    command: /scripts/start-backend.sh
+    volumes:
+      - ./docker/scripts:/scripts/
     env_file:
       - ./docker/backend.env
     expose:
       - "8000"
     networks:
       - net_psql
-      - net_local1
+      - net_gateway
 
   frontend:
     container_name: frontend
     depends_on:
       - backend
     build:
-      context: ./apps/frontend/
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
       # args:
       #   ENV_VARIABLE: ${ENV_VARIABLE}
       #   NEXT_PUBLIC_ENV_VARIABLE: ${NEXT_PUBLIC_ENV_VARIABLE}
@@ -49,7 +54,6 @@ services:
       - "3000"
     networks:
       - net_gateway
-      - net_local1
 
   nginx:
     container_name: ngnix
@@ -58,11 +62,11 @@ services:
     restart: always
     ports:
       - "80:80"
-      # - "443:443"
+      - "443:443"
     volumes:
-      # - /var/docker/etc/letsencrypt/:/etc/letsencrypt
+      - /var/docker/etc/letsencrypt/:/etc/letsencrypt
       - ./docker/nginx/conf.d/:/etc/nginx/conf.d
-      - ./docker/log/nginx:/var/log/nginx
+      - /var/docker/log/nginx:/var/log/nginx
     networks:
       - net_gateway
 
@@ -77,7 +81,6 @@ services:
       - "8080:8080"
     networks:
       - net_psql
-      - net_local1
 
 volumes:
   pgdata:
@@ -85,4 +88,3 @@ volumes:
 networks:
   net_psql:
   net_gateway:
-  net_local1:

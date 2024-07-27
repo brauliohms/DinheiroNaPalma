@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "registros")
+@Table(name = "Registros")
 public class RegistroEntity {
   @Id
   @Column(columnDefinition = "String")
