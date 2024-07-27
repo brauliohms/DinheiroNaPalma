@@ -3,7 +3,7 @@
 export const baseURL =
   process.env.NODE_ENV === "production"
     ? "https://api.dinheironapalma.com.br/v1"
-    : "http://localhost:8000/v1";
+    : "http://localhost:8000/v2";
 
 export const ENDPOINT_REGISTROS = `${baseURL}/registros`;
 

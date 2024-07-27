@@ -1,5 +1,6 @@
 "use server";
-import { BackendRegistroAdapter } from "@/adapters/backend";
+import { BackendRegistroAdapter, URL_HOME } from "@/adapters/backend";
+import { revalidatePath } from "next/cache";
 import { DeletarRegistro } from "registro";
 
 export async function DeletarRegistroController(registro_id: string) {
@@ -7,6 +8,7 @@ export async function DeletarRegistroController(registro_id: string) {
   const deleteRegistro = new DeletarRegistro(backend);
   try {
     await deleteRegistro.executar({ registro_id });
+    revalidatePath(URL_HOME);
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message);
