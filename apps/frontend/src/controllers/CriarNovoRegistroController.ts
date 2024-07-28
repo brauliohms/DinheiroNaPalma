@@ -20,7 +20,6 @@ export async function CriarRegistroController(
   const criarNovoRegistro = new CriarNovoRegistro(backend);
 
   const data = Object.fromEntries(formData.entries());
-  console.log(data);
 
   // Realiza a verificação se os dados enviados são válidos.
   const validation = FormSchema.safeParse(data);
