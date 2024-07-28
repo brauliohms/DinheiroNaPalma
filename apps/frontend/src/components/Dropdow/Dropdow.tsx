@@ -1,20 +1,64 @@
+"use client";
 import { useToggle } from "@/hooks";
 import clsx from "clsx";
+import { useEffect, useRef } from "react";
 import { RegistroStatus } from "registro";
 import { PointIcon } from "../Icons";
 
 interface DropdownProps {
+  idDropdown?: string;
   edicao: boolean;
   handleStatusChange: (status: RegistroStatus) => void;
   status: string;
+  closeBackdrop?: boolean;
+  closeEscape?: boolean;
 }
 
 export function Dropdown({
+  idDropdown = "dropdown",
   edicao,
   handleStatusChange,
   status,
+  closeBackdrop = true,
+  closeEscape = true,
 }: DropdownProps) {
   const [isShow, toggleShow] = useToggle(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Efeito para fechar o dropdown quando apertar tecla ESC
+  useEffect(() => {
+    // Evita quebrar quando está no Node (server components)
+    if (typeof window === "undefined" || !closeEscape || !edicao || !isShow)
+      return;
+
+    // Função foi feita separada para poder remover o event listener
+    function keyUpListener(e: KeyboardEvent) {
+      if (e.key === "Escape") toggleShow();
+    }
+
+    // Cria a event listener para capturar a tecla ESC e fechar o dropdown
+    window.addEventListener("keyup", keyUpListener);
+
+    // Remover o event listener
+    return () => window.removeEventListener("keyup", keyUpListener);
+  }, [closeEscape, toggleShow]);
+
+  // Efeito para fechar o dropdown quando clicar fora dele
+  useEffect(() => {
+    if (typeof window === "undefined" || !isShow || !closeBackdrop) return;
+
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        toggleShow();
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isShow, toggleShow]);
 
   function showStatus(status: string) {
     if (status === "pendente") {
@@ -48,12 +92,14 @@ export function Dropdown({
         {showStatus(status)}
       </button>
 
-      <div
+      <section
+        id={idDropdown}
+        ref={dropdownRef}
         className={clsx(
           "absolute right-0 z-10 mt-2 bg-black border border-zinc-800 p-1 shadow-md rounded-md w-32 origin-top-right transition-all ease-in-out duration-100",
           {
-            "transform opacity-100 scale-100": isShow,
-            "transform opacity-0 scale-95": !isShow,
+            "transform opacity-100 scale-100 visible": isShow,
+            "transform opacity-0 scale-95 invisible": !isShow,
           }
         )}
         role="menu"
@@ -109,7 +155,7 @@ export function Dropdown({
             Cancelado
           </button>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
