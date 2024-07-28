@@ -29,4 +29,8 @@
   .label {
     @apply text-zinc-600;
   }
+
+  dialog::backdrop {
+    @apply bg-black/50 backdrop-blur-sm transition-colors;
+  }
 }

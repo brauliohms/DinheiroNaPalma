@@ -8,3 +8,5 @@ export * from "./LoaderIcon";
 export * from "./PencilIcon";
 export * from "./PlusCircleIcon";
 export * from "./PointIcon";
+export * from "./TrashIcon";
+export * from "./XIcon";
