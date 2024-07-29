@@ -9,6 +9,7 @@ import {
   EditarRegistro,
   ObterRegistroPorId,
   ObterRegistros,
+  ObterRegistrosPorStatus,
 } from "registro";
 import { DatabasePrismaRegistroAdapter } from "./adapters";
 import { DatabaseKnexRegistroAdapter } from "./adapters/database";
@@ -21,6 +22,7 @@ import {
   ObterRegistrosController,
   TestController,
 } from "./controllers";
+import { ObterRegistrosPorStatusController } from "./controllers/ObterRegistrosPorStatusController";
 
 // Configuração Ambiente ----------------------------------------------
 const porta = process.env.API_PORT ?? 8000;
@@ -33,15 +35,14 @@ const app = express();
 
 // Configuração Básica ----------------------------------------------
 // cors({
-//   origin: "http://localhost:3000",
+//   origin: process.env.CORS_ORIGIN,
 //   optionsSuccessStatus: 200,
-// })
-// );
+// });
+app.use(cors());
 app.use(morgan(logger));
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
 app.listen(porta, () => console.log(`🔥 Server is running on port ${porta}`));
 
 // Configuração Rotas -----------------------------------------------
@@ -63,6 +64,7 @@ const getRegistrosPorId = new ObterRegistroPorId(bancoDados);
 const deleteRegistro = new DeletarRegistro(bancoDados);
 const updateRegistro = new EditarRegistro(bancoDados);
 const createRegistro = new CriarNovoRegistro(bancoDados);
+const getResgistrosPorStatus = new ObterRegistrosPorStatus(bancoDados);
 
 // knex
 const getRegistrosKnex = new ObterRegistros(bancoDadosKnex);
@@ -70,6 +72,7 @@ const getRegistrosPorIdKnex = new ObterRegistroPorId(bancoDadosKnex);
 const deleteRegistroKnex = new DeletarRegistro(bancoDadosKnex);
 const updateRegistroKnex = new EditarRegistro(bancoDadosKnex);
 const createRegistroKnex = new CriarNovoRegistro(bancoDadosKnex);
+const getResgistrosPorStatusKnex = new ObterRegistrosPorStatus(bancoDadosKnex);
 
 // ------------------------------------ ROTAS PRIVADAS
 // const authMiddleware = AuthMiddleware();
@@ -81,12 +84,17 @@ new ObterRegistroPorIdController(registrosRouter, getRegistrosPorId);
 new DeletarRegistroController(registrosRouter, deleteRegistro);
 new EditarRegistroController(registrosRouter, updateRegistro);
 new CriarNovoRegistroController(registrosRouter, createRegistro);
+new ObterRegistrosPorStatusController(registrosRouter, getResgistrosPorStatus);
 // knex
 new ObterRegistrosController(registrosRouterKnex, getRegistrosKnex);
 new ObterRegistroPorIdController(registrosRouterKnex, getRegistrosPorIdKnex);
 new DeletarRegistroController(registrosRouterKnex, deleteRegistroKnex);
 new EditarRegistroController(registrosRouterKnex, updateRegistroKnex);
 new CriarNovoRegistroController(registrosRouterKnex, createRegistroKnex);
+new ObterRegistrosPorStatusController(
+  registrosRouterKnex,
+  getResgistrosPorStatusKnex
+);
 
 // ------------------------------------ ROTAS PUBLICAS
 new TestController(app);

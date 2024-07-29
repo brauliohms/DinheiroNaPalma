@@ -1,14 +1,20 @@
 import { Id } from "common";
-import dotenv from "dotenv";
 import { BackendRegistro, Registro, RegistroDTO } from "registro";
 import { Adapter } from "./Adapter";
 import { conexao } from "./knex";
-dotenv.config();
 
-// const tableRegistros: string = process.env.TABLE_REGISTROS || "";
 const tableRegistros: string = "Registros";
 
 export class DatabaseKnexRegistroAdapter implements BackendRegistro {
+  public async obterRegistrosPorStatus(
+    filtro: string
+  ): Promise<Registro[] | null> {
+    const registros = await conexao(tableRegistros)
+      .select<Registro[]>("*")
+      .where({ status: filtro.toLowerCase() });
+
+    return registros.map((registro) => Adapter.mapDbToRegistro(registro));
+  }
   public async criar(registro: RegistroDTO): Promise<void> {
     const id = Id.gerar();
     const novoRegistro: Registro = {

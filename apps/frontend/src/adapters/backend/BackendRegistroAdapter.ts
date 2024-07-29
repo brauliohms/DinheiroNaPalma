@@ -1,8 +1,13 @@
-import { Registro, RegistroDTO, BackendRegistro } from "registro";
+import { BackendRegistro, Registro, RegistroDTO } from "registro";
 import { fetchGet, fetchMutation } from "./Fetch";
 import { ENDPOINT_REGISTROS } from "./config";
 
 export class BackendRegistroAdapter implements BackendRegistro {
+  public async obterRegistrosPorStatus(
+    status: string
+  ): Promise<Registro[] | null> {
+    return await fetchGet<Registro[]>(`${ENDPOINT_REGISTROS}/status/${status}`);
+  }
   async criar(registro: RegistroDTO): Promise<Response> {
     //   return await fetch(ENDPOINT_REGISTROS, {
     //     method: "POST",
@@ -11,21 +16,21 @@ export class BackendRegistroAdapter implements BackendRegistro {
     return await fetchMutation<RegistroDTO>(
       ENDPOINT_REGISTROS,
       "POST",
-      registro,
+      registro
     );
   }
 
-  async obterRegistroPorId(registro_id: number): Promise<Registro | null> {
+  async obterRegistroPorId(registro_id: string): Promise<Registro | null> {
     return await fetchGet<Registro>(`${ENDPOINT_REGISTROS}/${registro_id}`);
   }
-  async deletar(registro_id: number): Promise<void> {
+  async deletar(registro_id: string): Promise<void> {
     await fetchMutation(`${ENDPOINT_REGISTROS}/${registro_id}`, "DELETE");
   }
   async editar(registro: Registro): Promise<Response> {
     return await fetchMutation<Registro>(
-      `${ENDPOINT_REGISTROS}/${registro.id}`,
+      `${ENDPOINT_REGISTROS}`,
       "PUT",
-      registro,
+      registro
     );
   }
   async obterRegistros(): Promise<Registro[] | null> {

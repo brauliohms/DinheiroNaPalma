@@ -1,81 +1,58 @@
-# Turborepo starter
+# Projeto DinheiroNaPalma
 
-This is an official starter Turborepo.
+Projeto para finanças pessoais.
 
-## Using this example
+Em funcionamento em:
+`https://dinheironapalma.com.br/`
 
-Run the following command:
+API em funcionamento em:
 
-```sh
-npx create-turbo@latest
-```
+PRISMA: `https://api.dinheironapalma.com.br/v1/registros`
 
-## What's inside?
+KNEX: `https://api.dinheironapalma.com.br/v2/registros`
 
-This Turborepo includes the following packages/apps:
+## Instalação
 
-### Apps and Packages
+### Dependencias:
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- nodejs
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- yarn
 
-### Utilities
+- docker (para uso produção)
 
-This Turborepo has some additional tools already setup for you:
+### Passo a passo SEM DOCKER:
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- Após clonar o projeto, instalar as dependências estando na raiz do projeto:
+  `yarn install`
 
-### Build
+- Configurar o Backend e o Frontend na raiz de cada projeto (apps/backend, apps/frontend), gerando `.env` baseado no arquivo `env-example.env`:
+  `cp env-example.env .env`
 
-To build all apps and packages, run the following command:
+- Gerar o prisma client estando na raiz do projeto backend:
+  `npx prisma generate`
 
-```
-cd my-turborepo
-pnpm build
-```
+- Fazer as migrações estando na raiz do projeto backend:
+  `npx prisma migrate deploy`
 
-### Develop
+- Construir o projeto estando na raiz do projeto:
+  `yarn build`
 
-To develop all apps and packages, run the following command:
+- Executar o projeto backend:
+  `node apps/backend/dist/index.js`
 
-```
-cd my-turborepo
-pnpm dev
-```
+- Executar o projeto frontend estando na raiz do projeto frontend:
+  `yarn start`
 
-### Remote Caching
+### Passo a passo COM DOCKER:
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+- Após clonar o projeto, instalar as dependências estando na raiz do projeto:
+  `yarn install`
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+- Configurar o Backend e o Frontend alterando os valores em `docker/backend.env`, `docker/frontend.env`, `docker/postgres.env`:
 
-```
-cd my-turborepo
-npx turbo login
-```
+- Construir o projeto estando na raiz do projeto para gerar os diretórios `/dist` do `packages/common` e do `packages/registro`:
+  `yarn build`
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+- Construir as imagens docker e executar o projeto:
+  `docker compose up -d --build`

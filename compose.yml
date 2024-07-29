@@ -1,0 +1,90 @@
+version: "3.9"
+
+services:
+  psql:
+    container_name: psql
+    image: postgres:bookworm
+    user: postgres
+    restart: always
+    shm_size: 256mb
+    environment:
+      - LC_ALL=C.UTF-8
+    env_file:
+      - ./docker/postgres.env
+    expose:
+      - "5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - net_psql
+
+  backend:
+    container_name: backend
+    depends_on:
+      - psql
+    build:
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
+    restart: always
+    command: /scripts/start-backend.sh
+    volumes:
+      - ./docker/scripts:/scripts/
+    env_file:
+      - ./docker/backend.env
+    expose:
+      - "8000"
+    networks:
+      - net_psql
+      - net_gateway
+
+  frontend:
+    container_name: frontend
+    depends_on:
+      - backend
+    build:
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
+      # args:
+      #   ENV_VARIABLE: ${ENV_VARIABLE}
+      #   NEXT_PUBLIC_ENV_VARIABLE: ${NEXT_PUBLIC_ENV_VARIABLE}
+    restart: always
+    env_file:
+      - ./docker/frontend.env
+    expose:
+      - "3000"
+    networks:
+      - net_gateway
+
+  nginx:
+    container_name: ngnix
+    build:
+      context: ./docker/nginx/
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/docker/etc/letsencrypt/:/etc/letsencrypt
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d
+      - /var/docker/log/nginx:/var/log/nginx
+    networks:
+      - net_gateway
+
+  backend_java:
+    container_name: backend_java
+    depends_on:
+      - psql
+    build:
+      context: ./apps/backend-springboot/
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - net_psql
+
+volumes:
+  pgdata:
+
+networks:
+  net_psql:
+  net_gateway:

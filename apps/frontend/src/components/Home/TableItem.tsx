@@ -1,3 +1,4 @@
+import { URL_REGISTRO } from "@/adapters/backend";
 import clsx from "clsx";
 import { Formatter } from "common/src/Formatter";
 import Link from "next/link";
@@ -13,21 +14,22 @@ interface TableItemProps {
   registro: Registro;
 }
 
-const URL_REGISTRO = process.env.NEXT_PUBLIC_PAGE_REGISTRO || "";
-
 export function TableItem({ registro }: TableItemProps) {
   return (
-    <div className="w-full bg-zinc-900 rounded-md flex items-center justify-between px-8 py-4">
+    <div className=" bg-zinc-900 rounded-md flex flex-col sm:flex-row items-center justify-between px-8 py-4 gap-4 sm:gap-0">
       <div className="flex items-center justify-center gap-x-6">
-        <span className="font-bold">
-          <span className="text-zinc-500">#</span>
-          {registro.id}
+        <span className="font-semibold text-xl">
+          #{registro.id.slice(0, 8)}
         </span>
-        {/* <span className="text-sm text-zinc-500">{registro.tipo}</span> */}
         <span className="text-sm text-zinc-500">
-          {registro.data.toLocaleDateString("pt-br")}
+          {new Date(registro.data).toLocaleDateString("pt-br", {
+            year: "numeric",
+            day: "numeric",
+            month: "short",
+            timeZone: "UTC",
+          })}
         </span>
-        <span className="text-sm text-zinc-400 capitalize">
+        <span className="text-base text-white font-medium capitalize">
           {registro.descricao}
         </span>
       </div>

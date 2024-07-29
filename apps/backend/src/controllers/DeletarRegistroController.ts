@@ -17,9 +17,12 @@ export class DeletarRegistroController {
           // if (isNaN(registro_id)) {
           //   return res.status(400).send("ID do Registro inválido");
           // }
-
-          await this.casoDeUso.executar({ registro_id });
-          res.sendStatus(200);
+          if (registro_id) {
+            await this.casoDeUso.executar({ registro_id });
+            res.sendStatus(200);
+          } else {
+            res.status(400).send("Não foi informado um ID de Registro");
+          }
         } catch (error) {
           // Verifica se o erro é uma instância de Error
           if (error instanceof Error) {
