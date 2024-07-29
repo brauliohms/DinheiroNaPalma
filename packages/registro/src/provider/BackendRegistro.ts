@@ -6,4 +6,5 @@ export interface BackendRegistro {
   deletar(registro_id: string): Promise<void>;
   editar(registro: Registro): Promise<Response | void>;
   obterRegistros(): Promise<Registro[] | null>;
+  obterRegistrosPorStatus(status: string): Promise<Registro[] | null>;
 }

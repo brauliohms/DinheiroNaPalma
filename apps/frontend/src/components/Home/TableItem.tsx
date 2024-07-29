@@ -16,7 +16,7 @@ interface TableItemProps {
 
 export function TableItem({ registro }: TableItemProps) {
   return (
-    <div className="w-full bg-zinc-900 rounded-md flex items-center justify-between px-8 py-4">
+    <div className=" bg-zinc-900 rounded-md flex flex-col sm:flex-row items-center justify-between px-8 py-4 gap-4 sm:gap-0">
       <div className="flex items-center justify-center gap-x-6">
         <span className="font-semibold text-xl">
           #{registro.id.slice(0, 8)}

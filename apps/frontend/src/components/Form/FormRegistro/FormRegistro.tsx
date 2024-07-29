@@ -23,24 +23,25 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { Registro, RegistroStatus } from "registro";
 import { z } from "zod";
 import { FormDelete } from "../FormDelete";
 import FormSchema from "./FormRegistroSchema";
 
-interface SuccessState {
+export interface SuccessState {
   error: false;
   message: string;
 }
 
-interface ValidationErrorState {
+export interface ValidationErrorState {
   error: true;
   fieldErrors: {
     [key: string]: string[];
   };
 }
 
-interface ErrorState {
+export interface ErrorState {
   error: true;
   message: string;
 }
@@ -106,13 +107,13 @@ export function FormRegistro({ registro }: FormRegistroProps) {
           });
         });
       } else {
-        // TODO: toast error state.message
+        toast.error(state.message);
       }
     }
     if (!state?.error && state?.message) {
-      reset();
-      // TODO: toast success state.message
-      router.push("/");
+      // reset();
+      toast.success(state.message);
+      router.push(URL_HOME);
     }
   }, [state]);
 
@@ -139,10 +140,8 @@ export function FormRegistro({ registro }: FormRegistroProps) {
 
   async function salvarformulario(data: any) {
     if (registro) {
-      console.log("ATUALIZAR");
       editRegistroController(data, registro.id);
     } else {
-      console.log("NOVO REGISTRO");
       novoRegistroController(data);
       reset();
     }
@@ -150,7 +149,7 @@ export function FormRegistro({ registro }: FormRegistroProps) {
   }
   return (
     <>
-      <section className="w-full flex min-h-screen flex-col items-center p-24 text-white gap-y-8">
+      <section className="w-full flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24 text-white gap-y-8">
         <Link
           className="flex w-full justify-start items-center text-zinc-400 gap-x-2"
           href={URL_HOME}
@@ -162,9 +161,9 @@ export function FormRegistro({ registro }: FormRegistroProps) {
           id="form-registro"
           // onSubmit={handleSubmit(salvarformulario)}
           action={formAction}
-          className="w-full flex flex-col gap-y-4"
+          className="w-full flex flex-col gap-y-2 sm:gap-y-4"
         >
-          <div className="w-full bg-zinc-900 rounded-md flex items-center gap-x-6 px-8 py-4 font-medium">
+          <div className="w-full bg-zinc-900 rounded-md flex flex-col md:flex-row items-center gap-x-6 px-8 py-4 font-medium">
             <label>Modo</label>
             <button
               type="button"
@@ -190,17 +189,17 @@ export function FormRegistro({ registro }: FormRegistroProps) {
               )}
             </button>
           </div>
-          <div className="w-full bg-zinc-900 rounded-md flex flex-col justify-between px-8 py-4 gap-y-20">
-            <div className="flex justify-between items-end">
+          <div className="w-full bg-zinc-900 rounded-md flex flex-col justify-between px-2 sm:px-8 py-2 sm:py-4 gap-y-8 sm:gap-y-20">
+            <div className="flex flex-col sm:flex-row justify-between items-end">
               {registro && <input type="hidden" {...register("id")} />}
-              <div className="flex flex-col">
+              <div className="flex w-72 lg:w-96 items-start ">
                 <input
                   disabled={!edicao}
                   aria-disabled={!edicao}
                   type="text"
                   id="descricao"
                   placeholder="Descrição do registro"
-                  className="input text-3xl text-zinc-400"
+                  className="input text-xl md:text-3xl text-zinc-400"
                   maxLength={80}
                   {...register("descricao")}
                 />
@@ -225,7 +224,7 @@ export function FormRegistro({ registro }: FormRegistroProps) {
               </div>
             </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="flex flex-col">
                 <label htmlFor="data" className="label">
                   Data Registro
@@ -283,11 +282,11 @@ export function FormRegistro({ registro }: FormRegistroProps) {
                 </span>
               </div>
 
-              <div className="flex flex-col">
+              <div className="flex flex-col w-36">
                 <label htmlFor="valor" className="label">
                   Valor Registro
                 </label>
-                <span className="input">
+                <span className="input flex items-center">
                   R$
                   <input
                     disabled={!edicao}
@@ -311,8 +310,8 @@ export function FormRegistro({ registro }: FormRegistroProps) {
             </div>
           </div>
 
-          <div className="w-full bg-zinc-900 rounded-md flex items-center justify-between px-8 py-4">
-            <div className="flex items-center justify-start gap-x-2">
+          <div className="w-full bg-zinc-900 rounded-md flex flex-col gap-y-2 sm:flex-row items-center justify-between px-8 py-4">
+            <div className="flex items-center justify-start gap-y-2 gap-x-2">
               {/* <button
               type="submit"
               className="btn-primary px-8 py-2"

@@ -4,11 +4,19 @@ import { LoaderIcon, TrashIcon } from "@/components/Icons";
 import { DeletarRegistroController } from "@/controllers/DeletarRegistroController";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Registro } from "registro";
+import { ErrorState, ValidationErrorState } from "../FormRegistro";
 
 interface FormDeleteProps {
   registro: Registro;
   onCancel: () => void;
+}
+
+function isErrorState(
+  state: ValidationErrorState | ErrorState
+): state is ErrorState {
+  return (state as ErrorState).message !== undefined;
 }
 
 export function FormDelete({ registro, onCancel }: FormDeleteProps) {
@@ -21,16 +29,22 @@ export function FormDelete({ registro, onCancel }: FormDeleteProps) {
       const result = await DeletarRegistroController(registro.id);
       if (result?.error) {
         console.error(result.error);
-        // TODO: toast error state.message
+        if (isErrorState(result)) {
+          toast.error(result.message);
+        } else {
+          toast.error(
+            "Erro desconhecido ao excluir, tente novamente mais tarde"
+          );
+        }
       }
       if (!result?.error && result?.message) {
         onCancel(); // Fecha o modal
-        // TODO: toast success state.message
+        toast.success(result.message);
         router.push(URL_HOME);
       }
     } catch (error) {
       console.error(error);
-      // TODO: Mostrar mensagem de erro
+      toast.error(`Erro ao excluir: ${error}`);
     } finally {
       setIsLoading(false);
     }

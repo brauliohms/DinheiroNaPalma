@@ -1,14 +1,20 @@
 "use server";
 import { BackendRegistroAdapter } from "@/adapters/backend";
-import { ObterRegistros } from "registro";
+import { ObterRegistros, ObterRegistrosPorStatus, Registro } from "registro";
 
-export async function ObterRegistrosController() {
+export async function ObterRegistrosController(filtro: string) {
   const backend = new BackendRegistroAdapter();
   const obterRegistros = new ObterRegistros(backend);
+  const obterRegistrosPorStatus = new ObterRegistrosPorStatus(backend);
   try {
-    const registros = await obterRegistros.executar();
-    if (!registros) return [];
-
+    let registros: Registro[] = [];
+    if (filtro === "Todos") {
+      registros = await obterRegistros.executar();
+      // revalidatePath(URL_HOME);
+    } else {
+      registros = await obterRegistrosPorStatus.executar({ status: filtro });
+      // revalidatePath(URL_HOME);
+    }
     return registros;
   } catch (error) {
     if (error instanceof Error) {

@@ -41,13 +41,13 @@ export async function EditarRegistroController(
         revalidatePath(URL_HOME);
         return {
           error: false,
-          message: "Registro cadastrado com sucesso",
+          message: "Registro atualizado com sucesso",
         };
       } else {
         return {
           error: true,
           message:
-            "Ocorreu um erro ao tentar conectar na API ao cadastrar o Registro, tente novamente",
+            "Ocorreu um erro ao tentar conectar na API ao atualizar o Registro, tente novamente",
         };
       }
     } catch (error) {
