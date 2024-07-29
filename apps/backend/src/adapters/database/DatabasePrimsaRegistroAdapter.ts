@@ -7,6 +7,17 @@ import { Adapter } from "./Adapter";
 const prisma = new PrismaClient();
 
 export class DatabasePrismaRegistroAdapter implements BackendRegistro {
+  public async obterRegistrosPorStatus(
+    status: string
+  ): Promise<Registro[] | null> {
+    const registros = await prisma.registros.findMany({
+      where: {
+        status: status.toLowerCase(),
+      },
+    });
+    await prisma.$disconnect();
+    return registros.map((registro) => Adapter.mapDbToRegistro(registro));
+  }
   public async criar(registro: RegistroDTO): Promise<void> {
     const id = Id.gerar();
     const novoRegistro = {

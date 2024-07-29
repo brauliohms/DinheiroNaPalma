@@ -3,6 +3,11 @@ import { fetchGet, fetchMutation } from "./Fetch";
 import { ENDPOINT_REGISTROS } from "./config";
 
 export class BackendRegistroAdapter implements BackendRegistro {
+  public async obterRegistrosPorStatus(
+    status: string
+  ): Promise<Registro[] | null> {
+    return await fetchGet<Registro[]>(`${ENDPOINT_REGISTROS}/status/${status}`);
+  }
   async criar(registro: RegistroDTO): Promise<Response> {
     //   return await fetch(ENDPOINT_REGISTROS, {
     //     method: "POST",

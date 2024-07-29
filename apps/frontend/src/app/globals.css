@@ -4,7 +4,7 @@
 
 @layer components {
   .btn {
-    @apply rounded-full text-white text-base text-center flex items-center justify-between font-medium transition-colors;
+    @apply rounded-full text-white text-base text-center flex items-center justify-between font-medium transition-colors focus:outline-none;
   }
 
   .btn-primary {
@@ -23,7 +23,7 @@
   }
 
   .input {
-    @apply bg-transparent border-0 border-b-2 border-zinc-600 py-2 outline-none appearance-none text-xl font-bold focus:outline-none focus:ring-0 focus:border-zinc-600;
+    @apply bg-transparent border-0 border-b-2 border-zinc-600 py-0.5 sm:py-2 outline-none appearance-none text-xl font-bold focus:outline-none focus:ring-0 focus:border-zinc-600;
   }
 
   .label {

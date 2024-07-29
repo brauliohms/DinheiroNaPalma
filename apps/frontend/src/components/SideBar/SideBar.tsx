@@ -1,7 +1,7 @@
 export function SideBar() {
   // TODO: verificar a fonte do $
   return (
-    <aside className="w-24 bg-zinc-900 text-white flex flex-col justify-between">
+    <aside className="w-24 bg-zinc-900 text-white sm:flex flex-col justify-between hidden">
       <div className="w-full rounded-r-2xl bg-purple-600 p-6 text-center font-bold text-4xl italic">
         $
       </div>

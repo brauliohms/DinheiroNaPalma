@@ -1,6 +1,7 @@
 import { SideBar } from "@/components";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,7 +22,17 @@ export default function RootLayout({
         className={`${inter.className} antialiased bg-black min-h-dvh flex`}
       >
         <SideBar />
-        <main className="w-full container">{children}</main>
+        <main className="w-full sm:container">{children}</main>
+        <Toaster
+          toastOptions={{
+            duration: 5000,
+            style: {
+              background: "#000",
+              color: "#fff",
+              border: "1px solid #27272a",
+            },
+          }}
+        />
       </body>
     </html>
   );
